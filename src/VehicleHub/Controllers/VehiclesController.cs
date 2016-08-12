@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using VehicleHub.Models;
 using VehicleHub.Models.Enum;
+using VehicleHub.Persistance;
 
 // For more information on enabling Web API for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -13,48 +14,17 @@ namespace VehicleHub.Controllers
     [Route("api/[controller]")]
     public class VehiclesController : Controller
     {
+        private readonly VehicleDbContext _context;
+        public VehiclesController(VehicleDbContext context)
+        {
+            _context = context;
+        }
+
         // GET: api/values
         [HttpGet]
         public IEnumerable<Vehicle> Get()
         {
-            return new List<Vehicle>
-            {
-                new Vehicle
-                {
-                    Registration = "PO11SBA",
-                    Make = "Hyundai",
-                    Model = "i30",
-                    Marked = Marked.Liveried,
-                },
-                new Vehicle
-                {
-                    Registration = "PO11SCA",
-                    Make = "Hyundai",
-                    Model = "i30",
-                    Marked = Marked.Liveried,
-                },
-                new Vehicle
-                {
-                    Registration = "PO11SCB",
-                    Make = "Hyundai",
-                    Model = "i30",
-                    Marked = Marked.Liveried,
-                },
-                new Vehicle
-                {
-                    Registration = "PO11SDA",
-                    Make = "Hyundai",
-                    Model = "i30",
-                    Marked = Marked.Liveried
-                },
-                new Vehicle
-                {
-                    Registration = "PO11SDB",
-                    Make = "Hyundai",
-                    Model = "i30",
-                    Marked = Marked.Liveried
-                }
-            };
+            return _context.Vehicles.ToList();
         }
 
         // GET api/values/5

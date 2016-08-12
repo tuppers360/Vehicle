@@ -4,9 +4,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using VehicleHub.Persistance;
 
 namespace VehicleHub
 {
@@ -37,6 +39,9 @@ namespace VehicleHub
             // Add framework services.
             services.AddApplicationInsightsTelemetry(Configuration);
 
+            services.AddDbContext<VehicleDbContext>(options =>
+                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+
             services.AddMvc();
         }
 
@@ -51,6 +56,8 @@ namespace VehicleHub
             app.UseApplicationInsightsExceptionTelemetry();
 
             app.UseMvc();
+
+            VehicleDbInitialiser.Initialise(app.ApplicationServices);
         }
     }
 }
