@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using VehicleHub.Models;
-using VehicleHub.Models.Enum;
 using VehicleHub.Persistance;
 
 // For more information on enabling Web API for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
@@ -15,6 +12,7 @@ namespace VehicleHub.Controllers
     public class VehiclesController : Controller
     {
         private readonly VehicleDbContext _context;
+
         public VehiclesController(VehicleDbContext context)
         {
             _context = context;
