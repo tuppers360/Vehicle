@@ -1,4 +1,4 @@
-﻿namespace VehicleHub.Models.Enum
+﻿namespace VehicleHub.Core.Models.Enum
 {
     public enum Marked
     {

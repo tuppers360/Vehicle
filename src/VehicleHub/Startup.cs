@@ -4,7 +4,11 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json.Serialization;
+using VehicleHub.Core;
+using VehicleHub.Core.Repositories;
 using VehicleHub.Persistance;
+using VehicleHub.Persistance.Repositories;
 
 namespace VehicleHub
 {
@@ -38,7 +42,11 @@ namespace VehicleHub
             services.AddDbContext<VehicleDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
-            services.AddMvc();
+            services.AddMvc()
+                .AddJsonOptions(options => options.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver()); ;
+
+            services.AddSingleton<IVehicleRepository, VehicleRepository>();
+            services.AddSingleton<IUnitOfWork, UnitOfWork>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline

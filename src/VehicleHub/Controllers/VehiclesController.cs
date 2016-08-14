@@ -1,8 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc;
-using VehicleHub.Models;
+using VehicleHub.Core;
+using VehicleHub.Core.Dtos;
+using VehicleHub.Core.Models;
 using VehicleHub.Persistance;
+using VehicleHub.Persistance.Repositories;
 
 // For more information on enabling Web API for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -11,18 +15,46 @@ namespace VehicleHub.Controllers
     [Route("api/[controller]")]
     public class VehiclesController : Controller
     {
-        private readonly VehicleDbContext _context;
+        private IUnitOfWork _unitOfWork;
 
-        public VehiclesController(VehicleDbContext context)
+        public VehiclesController(IUnitOfWork unitOfWork)
         {
-            _context = context;
+            _unitOfWork = unitOfWork;
         }
 
+        //[HttpGet]
+        //public IEnumerable<Vehicle> Get()
+        //{
+        //    var query = _unitOfWork.Vehicles.GetAllVehicles()
+        //        .ToList();
+
+        //    if (query == null) throw new ArgumentNullException(nameof(query));
+
+        //    return query;
+        //}
         // GET: api/values
         [HttpGet]
-        public IEnumerable<Vehicle> Get()
+        public IEnumerable<VehicleDto> Get()
         {
-            return _context.Vehicles.ToList();
+            var query = _unitOfWork.Vehicles.GetAllVehiclesWithMileages()
+                .Select(v => new VehicleDto
+                {
+                    Registration = v.Registration,
+                    Make = v.Make,
+                    Model = v.Model,
+                    Marked = v.Marked,
+                    Mileages = v.Mileages.Select(m => new MileageDto
+                        {
+                            MileageDate = m.MileageDate,
+                            RecordedMileage = m.RecordedMileage
+                        })
+                        .ToList(),
+                })
+                .ToList();
+
+            if (query == null) throw new ArgumentNullException(nameof(query));
+
+            return query.AsEnumerable();
         }
 
         // GET api/values/5
